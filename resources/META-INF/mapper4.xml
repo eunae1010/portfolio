@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="faqDB">
+	<!-- 고객관리 FAQ -->
+	<insert id="faq_write" parameterType="string">
+		insert into faq values ('0',#{fsubject},#{fwriter},#{ftext},now())
+	</insert>
+	
+	<select id="faq_list" parameterType="string" resultType="faqdto">
+		select * from faq order by fidx desc
+	</select>
+	<select id="search_faq" parameterType="map" resultType="faqdto">
+		select * from faq where fsubject like concat('%',#{search},'%') or ftext like concat('%',#{search},'%') order by fidx desc
+	</select>
+	<select id="faq_view" resultType="faqdto">
+		select * from faq where fidx = #{fidx}
+	</select>
+	
+	<delete id="faq_delete">
+		delete from faq where fidx = #{fidx}
+	</delete>
+	
+	<update id="faq_modify">
+		update faq set fsubject = #{fsubject}, fwriter = #{fwriter}, ftext = #{ftext} where fidx = #{fidx}
+	</update>
+</mapper>

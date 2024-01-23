@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="adminDB">
+	<!-- 사이트 기본설정 -->
+	<insert id="site_info" parameterType="string">
+		insert into siteinfo values ('0',#{spage},#{semail},#{spoint},#{save_money},#{slevel},
+		#{scompany},#{scorp_num},#{sname},#{stel},#{smail_order},#{sdtc_num},#{spost},#{saddress},#{sinfo_name},#{sinfo_email},
+		#{sbank},#{saccount},#{scard_pay},#{shp_pay},#{sbook_pay},#{smin_point},#{smax_point},#{sreceipt},now())
+	</insert>
+	
+	<select id="info_select" parameterType="string" resultType="infodto">
+		select * from siteinfo order by sidx desc limit 0,1
+	</select>
+	
+	<update id="info_update">
+		update siteinfo set spage = #{spage}, semail = #{semail}, spoint = #{spoint}, save_money = #{save_money}, slevel = #{slevel}, scompany = #{scompany},
+		scorp_num = #{scorp_num}, sname = #{sname}, stel = #{stel}, smail_order = #{smail_order}, sdtc_num = #{sdtc_num}, spost = #{spost},
+		saddress = #{saddress}, sinfo_name = #{sinfo_name}, sinfo_email = #{sinfo_email}, sbank = #{sbank}, saccount = #{saccount}, scard_pay = #{scard_pay},
+		shp_pay = #{shp_pay}, sbook_pay = #{sbook_pay}, smin_point = #{smin_point}, smax_point = #{smax_point}, sreceipt = #{sreceipt} where sidx = #{sidx}
+	</update>
+	
+	<!-- 공지사항 -->
+	<insert id="notice_write" parameterType="string">
+		insert into admin_notice values ('0',#{noutput},#{nsubject},#{nwriter},#{nattach},#{ntext},now(),'0')
+	</insert>
+	
+	<select id="notice_list" parameterType="string" resultType="noticedto">
+		select * from admin_notice order by noutput, nidx desc
+	</select>
+	<select id="notice_view" resultType="noticedto">
+		select * from admin_notice where nidx = #{nidx}
+	</select>
+	
+	<update id="hits_update">
+		update admin_notice set nhits = nhits + 1 where nidx = #{nidx}
+	</update>
+	<update id="notice_modify">
+		update admin_notice set noutput = #{noutput}, nsubject = #{nsubject}, ntext = #{ntext} where nidx = #{nidx}
+	</update>
+	<update id="notice_fileUp">
+		update admin_notice set noutput = #{noutput}, nsubject = #{nsubject}, nattach = #{nattach}, ntext = #{ntext} where nidx = #{nidx}
+	</update>
+	<update id="file_update">
+		update admin_notice set nattach = '' where nidx = #{nidx}
+	</update>
+	
+	<delete id="notice_listdel">
+		delete from admin_notice where FIND_IN_SET(nidx, #{nidx})
+	</delete>
+	<delete id="notice_delete">
+		delete from admin_notice where nidx = #{nidx}
+	</delete>
+</mapper>

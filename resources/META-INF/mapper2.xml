@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="airDB">
+	<!-- 항공 코드 -->
+	<insert id="air_newcode" parameterType="string">
+		insert into air_code values ('0',#{airplane},#{airname},#{aircode},#{airflight},#{airuse},now())
+	</insert>
+	
+	<select id="check_code" parameterType="string" resultType="int">
+		select count(*) as cnt from air_code where aircode = #{aircode}
+	</select>
+	<select id="air_list" parameterType="string" resultType="airdto">
+		select * from air_code order by airidx desc
+	</select>
+	<select id="search_code" parameterType="map" resultType="airdto">
+		select * from air_code
+		<where>
+			<if test="part==1">
+				airname like concat('%',#{search},'%')
+			</if>
+			<if test="part==2">
+				aircode like concat('%',#{search},'%')
+			</if>
+		</where>
+		 order by airidx desc
+	</select>
+	<select id="air_viewCode" resultType="airdto">
+		select * from air_code where airidx = #{airidx}
+	</select>
+	
+	<update id="air_modifycode">
+		update air_code set airplane = #{airplane}, airname = #{airname}, aircode = #{aircode}, airflight = #{airflight} where airidx = #{airidx}
+	</update>
+	
+	<delete id="air_deletecode">
+		delete from air_code where airidx = #{airidx}
+	</delete>
+	
+	<!-- 항공편 등록 -->
+	<insert id="product_new" parameterType="string">
+		insert into air_plane values ('0',#{airidx},#{aircode},#{start_point},#{end_point},#{seat_text},#{seat},#{air_use},'N',now())
+	</insert>
+	
+	<select id="select_idx" resultType="string">
+		select airidx from air_code where aircode = #{aircode}
+	</select>
+	<select id="product_select1" parameterType="string" resultType="airdto">
+		select airplane from air_code where airuse = 'Y' group by airplane
+	</select>
+	<select id="product_select2" parameterType="string" resultType="airdto">
+		select airname from air_code where airplane = #{airplane} and airuse = 'Y' group by airname
+	</select>
+	<select id="product_select3" resultType="airdto">
+		select aircode,airflight from air_code where airplane = #{airplane} and airname = #{airname} and airuse = 'Y' group by aircode,airflight
+	</select>
+	<select id="product_list" parameterType="string" resultType="airdto">
+		select * from air_view order by airidx desc
+	</select>
+	<select id="search_air" parameterType="map" resultType="airdto">
+		select * from air_view
+		<where>
+			<if test="part==1">
+				airname like concat('%',#{search},'%')
+			</if>
+			<if test="part==2">
+				aircode like concat('%',#{search},'%')
+			</if>
+		</where>
+		 order by airidx desc
+	</select>
+</mapper>

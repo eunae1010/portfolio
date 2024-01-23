@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="seatDB">
+	<!-- 좌석 및 예매 설정 -->
+	<insert id="seat_insert" parameterType="airdto">
+		insert into seat_list values ('0',#{pidx},#{lstart},#{lend},#{lprice},now())
+	</insert>
+	
+	<select id="seat_list" parameterType="string" resultType="airdto">
+		select * from air_plane where air_complete = 'N' order by airidx desc
+	</select>
+	<select id="search_seat" parameterType="map" resultType="airdto">
+		select * from air_view
+		<where>
+			<if test="part==1">
+				start_point like concat('%',#{search},'%')
+			</if>
+			<if test="part==2">
+				end_point like concat('%',#{search},'%')
+			</if>
+		</where>
+		and air_complete = 'N' order by airidx desc
+	</select>
+	<select id="seat_view" parameterType="string" resultType="airdto">
+		select * from seat_view where air_complete = 'Y' order by airidx desc
+	</select>
+	
+	<update id="seat_update">
+		update air_plane set air_complete = 'Y' where pidx = #{pidx}
+	</update>
+	
+	<!-- 예매 리스트 -->
+	<select id="ticketing_list" parameterType="string" resultType="airdto">
+		select * from ticket_view
+	</select>
+	<select id="search_list" parameterType="map" resultType="airdto">
+		select * from ticket_view
+		<where>
+			<if test="part==1">
+				tname like concat('%',#{search},'%')
+			</if>
+			<if test="part==2">
+				tel like concat('%',#{search},'%')
+			</if>
+		</where>
+	</select>
+	
+	<delete id="ticket_cancel">
+		delete from ticketing where pidx = #{pidx}
+	</delete>
+</mapper>
